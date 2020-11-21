@@ -23,9 +23,9 @@ jobs:
 
     - name: Add external libraries
       run: |
-        ls -lFa ${{runner.workspace}}
-        vcs import lib/ < ${{runner.workspace}}/openwinch.repos
-        cp -r ${{runner.workspace}}/cmake/extra/* ${{runner.workspace}}/lib
+        ls -lFa ${{GITHUB_WORKSPACE}}
+        vcs import GITHUB_WORKSPACE/lib/ < ${{GITHUB_WORKSPACE}}/openwinch.repos
+        cp -r ${{GITHUB_WORKSPACE}}/cmake/extra/* ${{GITHUB_WORKSPACE}}/lib
 
     - name: Create Build Environment
       # Some projects don't allow in-source building, so create a separate build directory
