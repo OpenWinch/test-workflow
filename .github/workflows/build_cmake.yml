@@ -23,6 +23,7 @@ jobs:
 
     - name: Add external libraries
       run: |
+        ls -lFa ${{runner.workspace}}
         vcs import lib/ < ${{runner.workspace}}/openwinch.repos
         cp -r ${{runner.workspace}}/cmake/extra/* ${{runner.workspace}}/lib
 
