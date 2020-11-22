@@ -60,7 +60,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
@@ -68,28 +68,28 @@ jobs:
           Changes in this Release
           - First Change
           - Second Change
-        draft: true
+        draft: false
         prerelease: false
-      - name: Upload to Release
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const path = require('path');
-            const fs = require('fs');
-            const release_id = '${{ needs.create_release.outputs.id }}';
-            for (let file of await fs.readdirSync('./build/packages/')) {
-              if (path.extname(file) === '.deb') {
-                console.log('uploadReleaseAsset', file);
-                await github.repos.uploadReleaseAsset({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  release_id: release_id,
-                  name: file,
-                  data: await fs.readFileSync(`./${file}`)
-                });
-              }
+    - name: Upload to Release
+      uses: actions/github-script@v3
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          const path = require('path');
+          const fs = require('fs');
+          const release_id = '${{ needs.create_release.outputs.id }}';
+          for (let file of await fs.readdirSync('./build/packages/')) {
+            if (path.extname(file) === '.deb') {
+              console.log('uploadReleaseAsset', file);
+              await github.repos.uploadReleaseAsset({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: release_id,
+                name: file,
+                data: await fs.readFileSync(`./${file}`)
+              });
             }
+          }
 #    - name: Upload release binaries
 #      uses: alexellis/upload-assets@0.2.2
 #      env:
