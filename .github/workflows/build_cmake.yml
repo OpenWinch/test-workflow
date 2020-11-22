@@ -71,14 +71,16 @@ jobs:
         draft: false
         prerelease: false
     - name: Upload to Release
+      working-directory: ${{runner.workspace}}/build
       uses: actions/github-script@v3
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
+          const root = '${{runner.workspace}}/build/packages/';
           const path = require('path');
           const fs = require('fs');
           const release_id = '${{ needs.create_release.outputs.id }}';
-          for (let file of await fs.readdirSync('${{runner.workspace}}/build/packages/')) {
+          for (let file of await fs.readdirSync(root)) {
             if (path.extname(file) === '.deb') {
               console.log('uploadReleaseAsset', file);
               await github.repos.uploadReleaseAsset({
@@ -86,7 +88,7 @@ jobs:
                 repo: context.repo.repo,
                 release_id: release_id,
                 name: file,
-                data: await fs.readFileSync(`./${file}`)
+                data: await fs.readFileSync(`${root}/${file}`)
               });
             }
           }
