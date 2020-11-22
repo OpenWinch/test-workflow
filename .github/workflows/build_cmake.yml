@@ -56,39 +56,59 @@ jobs:
       with:
         name: Packages
         path: ${{runner.workspace}}/build/packages/*.deb
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          Changes in this Release
+          - First Change
+          - Second Change
+        draft: true
+        prerelease: false
+    - name: Upload to Release
+			uses: actions/github-script@v3
+			with:
+				github-token: ${{secrets.GITHUB_TOKEN}}
+				script: |
+				  const path = require('path');
+				  const fs = require('fs');
+				  const release_id = '${{ needs.create_release.outputs.id }}';
+				  for (let file of await fs.readdirSync('./build/packages/')) {
+						if (path.extname(file) === '.deb') {
+							console.log('uploadReleaseAsset', file);
+							await github.repos.uploadReleaseAsset({
+								owner: context.repo.owner,
+								repo: context.repo.repo,
+								release_id: release_id,
+								name: file,
+								data: await fs.readFileSync(`./${file}`)
+							});
+						}
+				  }
 #    - name: Upload release binaries
 #      uses: alexellis/upload-assets@0.2.2
 #      env:
 #        GITHUB_TOKEN: ${{github.token}}
 #      with:
 #        asset_paths: '["${{runner.workspace}}/build/packages/*.deb"]'
-    - uses: meeDamian/github-release@2.0
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ github.ref }}
-        name: Release ${{ github.ref }}
-        body: >
-          This release actually changes the fabric of the reality, so be careful 
-          while applying, as error in database migration, can irrecoverably wipe 
-          some laws of physics.  
-        gzip: false
-        files: >
-          ${{runner.workspace}}/build/packages/*.deb
-    
-#    - name: Create Release
-#      id: create_release
-#      uses: actions/create-release@v1
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#    - uses: meeDamian/github-release@2.0
 #      with:
-#        tag_name: ${{ github.ref }}
-#        release_name: Release ${{ github.ref }}
-#        body: |
-#          Changes in this Release
-#          - First Change
-#          - Second Change
-#        draft: true
-#        prerelease: false
+#        token: ${{ secrets.GITHUB_TOKEN }}
+#        tag: ${{ github.ref }}
+#        name: Release ${{ github.ref }}
+#        body: >
+#          This release actually changes the fabric of the reality, so be careful 
+#          while applying, as error in database migration, can irrecoverably wipe 
+#          some laws of physics.  
+#        gzip: false
+#        files: >
+#          ${{runner.workspace}}/build/packages/*.deb
+    
 
 #    - name: Upload Release Asset
 #      id: upload-release-asset 
