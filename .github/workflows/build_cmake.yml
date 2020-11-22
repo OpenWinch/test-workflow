@@ -68,18 +68,25 @@ jobs:
 # Cas de pull request
 
 # Cas des release
-    - uses: meeDamian/github-release@2.0
+    - name: Upload release binaries
+      uses: alexellis/upload-assets@0.2.2
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ github.ref }}
-        name: Release ${{ github.ref }}
-        body: >
-          This release actually changes the fabric of the reality, so be careful 
-          while applying, as error in database migration, can irrecoverably wipe 
-          some laws of physics.  
-        gzip: false
-        files: >
-          ${{runner.workspace}}/build/packages/*.deb
+        asset_paths: '["/build/packages/*.deb"]'
+
+#    - uses: meeDamian/github-release@2.0
+#      with:
+#        token: ${{ secrets.GITHUB_TOKEN }}
+#        tag: ${{ github.ref }}
+#        name: Release ${{ github.ref }}
+#        body: >
+#          This release actually changes the fabric of the reality, so be careful 
+#          while applying, as error in database migration, can irrecoverably wipe 
+#          some laws of physics.  
+#        gzip: false
+#        files: >
+#          ${{runner.workspace}}/build/packages/*.deb
     
 #    - name: Create Release
 #      id: create_release
