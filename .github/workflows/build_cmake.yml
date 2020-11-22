@@ -71,9 +71,9 @@ jobs:
     - name: Upload release binaries
       uses: alexellis/upload-assets@0.2.2
       env:
-        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_TOKEN: ${{github.token}}
       with:
-        asset_paths: '["./build/packages/*.deb"]'
+        asset_paths: '["${{runner.workspace}}/build/packages/*.deb"]'
 
 #    - uses: meeDamian/github-release@2.0
 #      with:
