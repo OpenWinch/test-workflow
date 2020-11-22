@@ -70,26 +70,26 @@ jobs:
           - Second Change
         draft: true
         prerelease: false
-    - name: Upload to Release
-			uses: actions/github-script@v3
-			with:
-				github-token: ${{secrets.GITHUB_TOKEN}}
-				script: |
-				  const path = require('path');
-				  const fs = require('fs');
-				  const release_id = '${{ needs.create_release.outputs.id }}';
-				  for (let file of await fs.readdirSync('./build/packages/')) {
-						if (path.extname(file) === '.deb') {
-							console.log('uploadReleaseAsset', file);
-							await github.repos.uploadReleaseAsset({
-								owner: context.repo.owner,
-								repo: context.repo.repo,
-								release_id: release_id,
-								name: file,
-								data: await fs.readFileSync(`./${file}`)
-							});
-						}
-				  }
+      - name: Upload to Release
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const path = require('path');
+            const fs = require('fs');
+            const release_id = '${{ needs.create_release.outputs.id }}';
+            for (let file of await fs.readdirSync('./build/packages/')) {
+              if (path.extname(file) === '.deb') {
+                console.log('uploadReleaseAsset', file);
+                await github.repos.uploadReleaseAsset({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  release_id: release_id,
+                  name: file,
+                  data: await fs.readFileSync(`./${file}`)
+                });
+              }
+            }
 #    - name: Upload release binaries
 #      uses: alexellis/upload-assets@0.2.2
 #      env:
