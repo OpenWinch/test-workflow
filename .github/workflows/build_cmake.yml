@@ -68,20 +68,33 @@ jobs:
 # Cas de pull request
 
 # Cas des release
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: meeDamian/github-release@2.0
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          Changes in this Release
-          - First Change
-          - Second Change
-        draft: true
-        prerelease: false
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ github.ref }}
+        name: Release ${{ github.ref }}
+        body: >
+          This release actually changes the fabric of the reality, so be careful 
+          while applying, as error in database migration, can irrecoverably wipe 
+          some laws of physics.  
+        gzip: false
+        files: >
+          ${{runner.workspace}}/build/packages/*.deb
+    
+#    - name: Create Release
+#      id: create_release
+#      uses: actions/create-release@v1
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        tag_name: ${{ github.ref }}
+#        release_name: Release ${{ github.ref }}
+#        body: |
+#          Changes in this Release
+#          - First Change
+#          - Second Change
+#        draft: true
+#        prerelease: false
 
 #    - name: Upload Release Asset
 #      id: upload-release-asset 
