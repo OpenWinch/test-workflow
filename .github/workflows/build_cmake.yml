@@ -2,9 +2,7 @@ name: CMake
 
 # on: [push, pull_request]
 on:
-  push:
-    # Sequence of patterns matched against refs/tags
-    tags
+  push: tags
       #- 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 
@@ -71,7 +69,7 @@ jobs:
         tag_name: ${{ github.ref }}
         release_name: OpenWinch ${{ github.ref }}
         body: |
-          # RELEASE NOTES
+          # RELEASE NOTES...
           ## Changelog
           //TODO
         draft: false
