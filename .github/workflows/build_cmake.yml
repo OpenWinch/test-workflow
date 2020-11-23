@@ -68,7 +68,7 @@ jobs:
           # RELEASE NOTES
           ## Changelog
           //TODO
-        draft: true
+        draft: false
         prerelease: false
     - name: Upload to Release
       uses: actions/github-script@v3
