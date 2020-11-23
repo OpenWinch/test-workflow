@@ -63,11 +63,11 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        release_name: OpenWinch ${{ github.ref }}
         body: |
-          Changes in this Release
-          - First Change
-          - Second Change
+          # RELEASE NOTES
+          ## Changelog
+          //TODO
         draft: true
         prerelease: false
     - name: Upload to Release
@@ -78,7 +78,7 @@ jobs:
           const root = '${{runner.workspace}}/build/packages/';
           const path = require('path');
           const fs = require('fs');
-          const release_id = '${{ needs.create_release.outputs.id }}';
+          const release_id = '${{steps.create_release.outputs.id}}';
           for (let file of await fs.readdirSync(root)) {
             if (path.extname(file) === '.deb') {
               console.log('uploadReleaseAsset', file);
